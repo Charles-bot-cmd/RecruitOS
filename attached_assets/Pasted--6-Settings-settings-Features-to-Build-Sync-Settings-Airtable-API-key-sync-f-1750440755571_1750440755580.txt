@@ -1,0 +1,1111 @@
+### 6. Settings (`/settings`)
+**Features to Build:**
+- **Sync Settings**: Airtable API key, sync frequency
+- **User Management**: Team members and roles
+- **General Settings**: Company info, branding
+- **Notification Preferences**: Email/in-app notifications
+
+**Settings Page Implementation:**
+```typescript
+// app/(dashboard)/settings/page.tsx
+export default function SettingsPage() {
+  const [activeTab, setActiveTab] = useState('sync');
+
+  return (
+    <div className="space-y-6">
+      <PageHeader 
+        title="Settings" 
+        subtitle="Configure your RecruitOS workspace"
+      />
+
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="sync">Sync Settings</TabsTrigger>
+          <TabsTrigger value="users">Team Management</TabsTrigger>
+          <TabsTrigger value="general">General</TabsTrigger>
+          <TabsTrigger value="notifications">Notifications</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="sync" className="space-y-6">
+          <SyncSettings />
+        </TabsContent>
+
+        <TabsContent value="users" className="space-y-6">
+          <UserManagement />
+        </TabsContent>
+
+        <TabsContent value="general" className="space-y-6">
+          <GeneralSettings />
+        </TabsContent>
+
+        <TabsContent value="notifications" className="space-y-6">
+          <NotificationSettings />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+}
+```
+
+## Modal Implementations
+
+### 1. Add/Edit Candidate Modal
+```typescript
+// components/modals/candidate-modal.tsx
+interface CandidateModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  candidate?: Candidate;
+  mode: 'create' | 'edit';
+}
+
+export function CandidateModal({ isOpen, onClose, candidate, mode }: CandidateModalProps) {
+  const form = useForm<CandidateFormData>({
+    resolver: zodResolver(candidateSchema),
+    defaultValues: candidate || {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      position: '',
+      source: 'LinkedIn',
+      phase: 1,
+      status: 'New'
+    }
+  });
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>
+            {mode === 'create' ? 'Add New Candidate' : 'Edit Candidate'}
+          </DialogTitle>
+          <DialogDescription>
+            {mode === 'create' 
+              ? 'Enter the candidate details to add them to your pipeline.'
+              : 'Update the candidate information below.'
+            }
+          </DialogDescription>
+        </DialogHeader>
+
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Personal Information */}
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ fiel# Complete Replit Prompt for RecruitOS UI Development
+
+## Project Overview
+Build **RecruitOS** - a modern recruitment workflow platform frontend that syncs candidate data from Airtable into Supabase. Create a fully functional, responsive UI using Next.js 14, TypeScript, Shadcn UI, and Tailwind CSS.
+
+## Technical Stack Requirements
+- **Framework**: Next.js 14 with App Router
+- **Language**: TypeScript (strict mode)
+- **Styling**: Tailwind CSS + Shadcn UI components
+- **Icons**: Lucide React
+- **State Management**: React Context + Custom Hooks
+- **Data Fetching**: SWR or TanStack Query (your choice)
+- **Forms**: React Hook Form + Zod validation
+- **Database**: Supabase client (mock data for now)
+
+## Project Structure
+Create this exact folder structure:
+
+```
+src/
+├── app/
+│   ├── (dashboard)/
+│   │   ├── layout.tsx
+│   │   ├── page.tsx                    # Dashboard
+│   │   ├── candidates/
+│   │   │   ├── phase-1/
+│   │   │   │   └── page.tsx
+│   │   │   ├── phase-2/
+│   │   │   │   └── page.tsx
+│   │   │   └── [id]/
+│   │   │       └── page.tsx            # Candidate Profile
+│   │   ├── interviews/
+│   │   │   └── page.tsx
+│   │   └── settings/
+│   │       └── page.tsx
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── ui/                             # Shadcn components
+│   ├── layout/
+│   │   ├── sidebar.tsx
+│   │   ├── top-bar.tsx
+│   │   ├── mobile-nav.tsx
+│   │   └── main-layout.tsx
+│   ├── pages/
+│   │   ├── dashboard/
+│   │   ├── candidates/
+│   │   ├── interviews/
+│   │   └── settings/
+│   └── shared/
+│       ├── candidate-card.tsx
+│       ├── status-badge.tsx
+│       ├── data-table.tsx
+│       └── search-filter.tsx
+├── lib/
+│   ├── utils.ts
+│   ├── constants.ts
+│   ├── mock-data.ts
+│   └── types.ts
+├── hooks/
+│   ├── use-candidates.ts
+│   ├── use-theme.ts
+│   └── use-local-storage.ts
+└── providers/
+    ├── theme-provider.tsx
+    └── data-provider.tsx
+```
+
+## Design System & Styling Requirements
+
+### Color Scheme
+Use this custom theme in your Tailwind config:
+```javascript
+theme: {
+  extend: {
+    colors: {
+      primary: {
+        50: '#eff6ff',
+        500: '#3b82f6',
+        600: '#2563eb',
+        900: '#1e3a8a'
+      },
+      success: {
+        50: '#f0fdf4',
+        500: '#22c55e',
+        600: '#16a34a'
+      },
+      warning: {
+        50: '#fefce8',
+        500: '#eab308',
+        600: '#ca8a04'
+      },
+      danger: {
+        50: '#fef2f2',
+        500: '#ef4444',
+        600: '#dc2626'
+      }
+    }
+  }
+}
+```
+
+### Component Design Principles
+- **Dark/Light Mode**: Full theme switching capability
+- **Mobile-First**: Responsive on all screen sizes
+- **Consistent Spacing**: Use Tailwind's spacing scale (4, 6, 8, 12, 16)
+- **Modern Aesthetics**: Clean, minimal design with subtle shadows and rounded corners
+- **Interactive Elements**: Hover states, smooth transitions, loading states
+
+## Data Types & Mock Data
+
+### Core Types
+```typescript
+// lib/types.ts
+export interface Candidate {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  position: string;
+  phase: 1 | 2;
+  status: CandidateStatus;
+  source: 'LinkedIn' | 'Indeed' | 'Referral' | 'Website';
+  appliedDate: string;
+  lastUpdated: string;
+  resumeUrl?: string;
+  linkedinUrl?: string;
+  skills?: string[];
+  experience?: number;
+  notes?: string;
+  interviewHistory?: Interview[];
+}
+
+export type CandidateStatus = 
+  // Phase 1
+  | 'New' | 'Screened' | 'Phone Interview' | 'Rejected'
+  // Phase 2  
+  | 'Technical Interview' | 'Final Interview' | 'Offer Extended' | 'Hired';
+
+export interface Interview {
+  id: string;
+  candidateId: string;
+  type: 'Phone' | 'Video' | 'In-Person' | 'Technical';
+  scheduledDate: string;
+  duration: number;
+  interviewer: string;
+  status: 'Scheduled' | 'Completed' | 'Cancelled';
+  notes?: string;
+  rating?: number;
+}
+
+export interface DashboardStats {
+  totalCandidates: number;
+  phase1Count: number;
+  phase2Count: number;
+  hiredCount: number;
+  interviewsToday: number;
+  syncStatus: 'synced' | 'syncing' | 'error';
+  lastSync: string;
+}
+```
+
+### Mock Data Requirements
+Create realistic mock data for:
+- **50+ candidates** across both phases with varied statuses
+- **20+ interviews** scheduled across different dates
+- **Dashboard statistics** with meaningful numbers
+- **Recent activity** timeline data
+
+## Complete Page & Modal Implementation Requirements
+
+### 1. Dashboard (`/`)
+**Features to Build:**
+- **Stats Cards Grid**: 4 metric cards showing total candidates, phase counts, interviews today
+- **Sync Status Indicator**: Shows last sync time with Airtable, sync button
+- **Recent Activity Feed**: Timeline of recent candidate status changes
+- **Quick Actions**: "Add Candidate", "Schedule Interview", "View Reports"
+- **Pipeline Chart**: Simple bar/donut chart showing candidate distribution
+
+**Key Components:**
+```typescript
+- StatsCard: Metric display with trend indicator
+- SyncStatusCard: Connection status with last sync time
+- ActivityFeed: Scrollable timeline of recent actions
+- QuickActions: Button grid for common tasks
+```
+
+**Dashboard Page Implementation:**
+```typescript
+// app/(dashboard)/page.tsx
+export default function DashboardPage() {
+  return (
+    <div className="space-y-6">
+      <PageHeader 
+        title="Dashboard" 
+        subtitle="Welcome back! Here's what's happening with your recruitment." 
+      />
+      
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatsCard
+          title="Total Candidates"
+          value="248"
+          change="+12%"
+          trend="up"
+          icon={Users}
+        />
+        <StatsCard
+          title="Phase 1"
+          value="156"
+          change="+8%"
+          trend="up"
+          icon={UserCheck}
+        />
+        <StatsCard
+          title="Phase 2"
+          value="92"
+          change="+4%"
+          trend="up"
+          icon={UserCog}
+        />
+        <StatsCard
+          title="Interviews Today"
+          value="8"
+          change="2 completed"
+          trend="neutral"
+          icon={Calendar}
+        />
+      </div>
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Recent Activity - Takes 2 columns */}
+        <div className="lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ActivityFeed />
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sync Status & Quick Actions */}
+        <div className="space-y-6">
+          <SyncStatusCard />
+          <QuickActionsCard />
+        </div>
+      </div>
+
+      {/* Pipeline Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Candidate Pipeline</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <CandidatePipelineChart />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+```
+
+### 2. Phase 1 Candidates (`/candidates/phase-1`)
+**Features to Build:**
+- **View Toggle**: Switch between Table and Kanban views
+- **Advanced Filters**: Status, Source, Date range, Skills
+- **Search**: Real-time search across name, email, position
+- **Bulk Actions**: Select multiple candidates for status updates
+- **Export**: Download filtered results as CSV
+- **Pagination**: Handle large datasets efficiently
+
+**Key Components:**
+```typescript
+- CandidatesTable: Sortable table with selection
+- CandidatesKanban: Drag-and-drop board with status columns
+- FilterBar: Multi-select filters with clear option
+- BulkActionBar: Actions for selected candidates
+```
+
+**Phase 1 Candidates Page Implementation:**
+```typescript
+// app/(dashboard)/candidates/phase-1/page.tsx
+export default function Phase1CandidatesPage() {
+  const [view, setView] = useState<'table' | 'kanban'>('table');
+  const [filters, setFilters] = useState<FilterState>({});
+  const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
+  
+  return (
+    <div className="space-y-6">
+      <PageHeader 
+        title="Phase 1 Candidates" 
+        subtitle="Screen and evaluate initial applications"
+        actions={
+          <div className="flex gap-2">
+            <Button onClick={() => setShowAddModal(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Candidate
+            </Button>
+            <SyncButton />
+          </div>
+        }
+      />
+
+      {/* Filter Bar */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <SearchInput 
+              placeholder="Search candidates..." 
+              onSearch={handleSearch}
+              className="flex-1"
+            />
+            <StatusFilter 
+              options={['All', 'New', 'Screened', 'Phone Interview', 'Rejected']}
+              value={filters.status}
+              onChange={(status) => setFilters({...filters, status})}
+            />
+            <SourceFilter 
+              options={['All', 'LinkedIn', 'Indeed', 'Referral', 'Website']}
+              value={filters.source}
+              onChange={(source) => setFilters({...filters, source})}
+            />
+            <DateRangeFilter 
+              value={filters.dateRange}
+              onChange={(dateRange) => setFilters({...filters, dateRange})}
+            />
+            <ViewToggle 
+              value={view} 
+              onChange={setView}
+              options={[
+                { value: 'table', icon: Table, label: 'Table' },
+                { value: 'kanban', icon: Columns, label: 'Board' }
+              ]}
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Bulk Actions Bar */}
+      {selectedCandidates.length > 0 && (
+        <BulkActionBar 
+          selectedCount={selectedCandidates.length}
+          actions={[
+            { label: 'Move to Phase 2', action: handleBulkMovePhase },
+            { label: 'Mark as Screened', action: handleBulkUpdateStatus },
+            { label: 'Schedule Interviews', action: handleBulkSchedule },
+            { label: 'Export Selected', action: handleBulkExport },
+            { label: 'Delete', action: handleBulkDelete, variant: 'destructive' }
+          ]}
+          onClear={() => setSelectedCandidates([])}
+        />
+      )}
+
+      {/* Main Content */}
+      {view === 'table' ? (
+        <CandidatesTable 
+          candidates={filteredCandidates}
+          selectedCandidates={selectedCandidates}
+          onSelectionChange={setSelectedCandidates}
+          onCandidateClick={handleCandidateClick}
+        />
+      ) : (
+        <CandidatesKanban 
+          candidates={filteredCandidates}
+          columns={[
+            { id: 'new', title: 'New', status: 'New' },
+            { id: 'screened', title: 'Screened', status: 'Screened' },
+            { id: 'phone-interview', title: 'Phone Interview', status: 'Phone Interview' },
+            { id: 'rejected', title: 'Rejected', status: 'Rejected' }
+          ]}
+          onCandidateMove={handleCandidateMove}
+          onCandidateClick={handleCandidateClick}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+### 3. Phase 2 Candidates (`/candidates/phase-2`)
+Similar to Phase 1 but with different status columns:
+- **Kanban Columns**: Technical Interview, Final Interview, Offer Extended, Hired, Rejected
+- **Interview Integration**: Quick schedule buttons, interview history
+- **Offer Management**: Track offer details and responses
+
+**Phase 2 Candidates Page Implementation:**
+```typescript
+// app/(dashboard)/candidates/phase-2/page.tsx
+export default function Phase2CandidatesPage() {
+  // Similar structure to Phase 1 but with different statuses and features
+  
+  return (
+    <div className="space-y-6">
+      <PageHeader 
+        title="Phase 2 Candidates" 
+        subtitle="Advanced interviews and final decisions"
+        actions={
+          <div className="flex gap-2">
+            <Button onClick={() => setShowScheduleModal(true)}>
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule Interview
+            </Button>
+            <Button onClick={() => setShowOfferModal(true)}>
+              <FileText className="w-4 h-4 mr-2" />
+              Create Offer
+            </Button>
+          </div>
+        }
+      />
+
+      {/* Enhanced filters for Phase 2 */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row gap-4">
+            <SearchInput placeholder="Search candidates..." />
+            <StatusFilter 
+              options={[
+                'All', 'Technical Interview', 'Final Interview', 
+                'Offer Extended', 'Hired', 'Rejected'
+              ]}
+            />
+            <InterviewerFilter />
+            <SalaryRangeFilter />
+            <ViewToggle value={view} onChange={setView} />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Kanban with Phase 2 specific columns */}
+      {view === 'kanban' && (
+        <CandidatesKanban 
+          candidates={filteredCandidates}
+          columns={[
+            { id: 'technical', title: 'Technical Interview', status: 'Technical Interview' },
+            { id: 'final', title: 'Final Interview', status: 'Final Interview' },
+            { id: 'offer', title: 'Offer Extended', status: 'Offer Extended' },
+            { id: 'hired', title: 'Hired', status: 'Hired' },
+            { id: 'rejected', title: 'Rejected', status: 'Rejected' }
+          ]}
+          onCandidateMove={handleCandidateMove}
+          showInterviewActions={true}
+          showOfferActions={true}
+        />
+      )}
+    </div>
+  );
+}
+```
+
+### 4. Candidate Profile (`/candidates/[id]`)
+**Features to Build:**
+- **Header Section**: Photo, name, contact info, current status
+- **Tabbed Content**: Overview, Interviews, Notes, Documents
+- **Activity Timeline**: All interactions and status changes
+- **Quick Actions Sidebar**: Move phase, schedule interview, add notes
+- **Interview History**: Past and upcoming interviews with details
+
+**Key Components:**
+```typescript
+- CandidateHeader: Contact info with status badge
+- ProfileTabs: Tabbed interface for different data views
+- ActivityTimeline: Chronological activity list
+- InterviewCard: Interview details with actions
+- NotesSection: Add/edit candidate notes
+```
+
+**Candidate Profile Page Implementation:**
+```typescript
+// app/(dashboard)/candidates/[id]/page.tsx
+export default function CandidateProfilePage({ params }: { params: { id: string } }) {
+  const [activeTab, setActiveTab] = useState('overview');
+  const [candidate, setCandiate] = useState<Candidate | null>(null);
+  
+  return (
+    <div className="space-y-6">
+      <PageHeader 
+        title={candidate ? `${candidate.firstName} ${candidate.lastName}` : 'Loading...'}
+        breadcrumbs={[
+          { label: 'Candidates', href: '/candidates/phase-1' },
+          { label: candidate?.firstName || 'Profile' }
+        ]}
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setShowEditModal(true)}>
+              <Edit className="w-4 h-4 mr-2" />
+              Edit
+            </Button>
+            <Button onClick={() => setShowScheduleModal(true)}>
+              <Calendar className="w-4 h-4 mr-2" />
+              Schedule Interview
+            </Button>
+          </div>
+        }
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Main Content - 3 columns */}
+        <div className="lg:col-span-3">
+          {/* Candidate Header Card */}
+          <Card className="mb-6">
+            <CardContent className="pt-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                <Avatar className="h-20 w-20">
+                  <AvatarImage src={candidate?.avatarUrl} />
+                  <AvatarFallback className="text-lg">
+                    {candidate?.firstName?.[0]}{candidate?.lastName?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                
+                <div className="flex-1">
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                    <div>
+                      <h1 className="text-2xl font-bold">
+                        {candidate?.firstName} {candidate?.lastName}
+                      </h1>
+                      <p className="text-muted-foreground">{candidate?.position}</p>
+                    </div>
+                    <StatusBadge status={candidate?.status} size="lg" />
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-4 h-4" />
+                      <a href={`mailto:${candidate?.email}`} className="hover:underline">
+                        {candidate?.email}
+                      </a>
+                    </div>
+                    {candidate?.phone && (
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4" />
+                        <a href={`tel:${candidate?.phone}`} className="hover:underline">
+                          {candidate?.phone}
+                        </a>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      <span>Applied {formatDate(candidate?.appliedDate)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Tabbed Content */}
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="interviews">Interviews</TabsTrigger>
+              <TabsTrigger value="notes">Notes</TabsTrigger>
+              <TabsTrigger value="documents">Documents</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="overview" className="space-y-6">
+              <CandidateOverview candidate={candidate} />
+            </TabsContent>
+            
+            <TabsContent value="interviews" className="space-y-6">
+              <InterviewHistory 
+                candidateId={candidate?.id}
+                onScheduleNew={() => setShowScheduleModal(true)}
+              />
+            </TabsContent>
+            
+            <TabsContent value="notes" className="space-y-6">
+              <CandidateNotes 
+                candidateId={candidate?.id}
+                onAddNote={handleAddNote}
+              />
+            </TabsContent>
+            
+            <TabsContent value="documents" className="space-y-6">
+              <CandidateDocuments 
+                candidateId={candidate?.id}
+                onUpload={handleDocumentUpload}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* Sidebar - 1 column */}
+        <div className="space-y-6">
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2">
+              <Button 
+                className="w-full justify-start" 
+                variant="outline"
+                onClick={() => setShowMovePhaseModal(true)}
+              >
+                <ArrowRight className="w-4 h-4 mr-2" />
+                Move to Phase {candidate?.phase === 1 ? '2' : '1'}
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="outline"
+                onClick={() => setShowScheduleModal(true)}
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Schedule Interview
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="outline"
+                onClick={() => setShowAddNoteModal(true)}
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Add Note
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="outline"
+                onClick={() => setShowSendEmailModal(true)}
+              >
+                <Send className="w-4 h-4 mr-2" />
+                Send Email
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Activity Timeline */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Activity Timeline</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ActivityTimeline candidateId={candidate?.id} />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### 5. Interview Scheduling (`/interviews`)
+**Features to Build:**
+- **Calendar View**: Monthly calendar with interview slots
+- **Day/Week Views**: Detailed scheduling interface
+- **Interviewer Availability**: Show who's available when
+- **Conflict Detection**: Prevent double-booking
+- **Interview Templates**: Common interview types and durations
+
+**Key Components:**
+```typescript
+- InterviewCalendar: Full calendar with events
+- ScheduleModal: Form for creating interviews
+- InterviewerSelector: Choose available interviewers
+- TimeSlotPicker: Available time selection
+```
+
+**Interview Scheduling Page Implementation:**
+```typescript
+// app/(dashboard)/interviews/page.tsx
+export default function InterviewsPage() {
+  const [view, setView] = useState<'month' | 'week' | 'day'>('month');
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+
+  return (
+    <div className="space-y-6">
+      <PageHeader 
+        title="Interview Scheduling" 
+        subtitle="Manage interviews and interviewer availability"
+        actions={
+          <div className="flex gap-2">
+            <Button onClick={() => setShowScheduleModal(true)}>
+              <Plus className="w-4 h-4 mr-2" />
+              Schedule Interview
+            </Button>
+            <Button variant="outline" onClick={() => setShowAvailabilityModal(true)}>
+              <Clock className="w-4 h-4 mr-2" />
+              Set Availability
+            </Button>
+          </div>
+        }
+      />
+
+      {/* Calendar Controls */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedDate(subMonths(selectedDate, 1))}
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </Button>
+                <h3 className="text-lg font-semibold min-w-[200px] text-center">
+                  {format(selectedDate, 'MMMM yyyy')}
+                </h3>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setSelectedDate(addMonths(selectedDate, 1))}
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedDate(new Date())}
+              >
+                Today
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <InterviewerFilter />
+              <Select value={view} onValueChange={setView}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="month">Month</SelectItem>
+                  <SelectItem value="week">Week</SelectItem>
+                  <SelectItem value="day">Day</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Calendar - 3 columns */}
+        <div className="lg:col-span-3">
+          <Card>
+            <CardContent className="p-0">
+              {view === 'month' && (
+                <InterviewCalendar
+                  interviews={interviews}
+                  selectedDate={selectedDate}
+                  onDateSelect={setSelectedDate}
+                  onInterviewClick={handleInterviewClick}
+                  onSlotClick={handleSlotClick}
+                />
+              )}
+              {view === 'week' && (
+                <WeeklyCalendar
+                  interviews={interviews}
+                  selectedDate={selectedDate}
+                  onInterviewClick={handleInterviewClick}
+                  onSlotClick={handleSlotClick}
+                />
+              )}
+              {view === 'day' && (
+                <DailyCalendar
+                  interviews={interviews.filter(i => 
+                    isSameDay(new Date(i.scheduledDate), selectedDate)
+                  )}
+                  selectedDate={selectedDate}
+                  onInterviewClick={handleInterviewClick}
+                  onSlotClick={handleSlotClick}
+                />
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar - 1 column */}
+        <div className="space-y-6">
+          {/* Today's Interviews */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Today's Interviews</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <TodaysInterviews 
+                interviews={todaysInterviews}
+                onInterviewClick={handleInterviewClick}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Upcoming Interviews */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Upcoming This Week</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <UpcomingInterviews 
+                interviews={upcomingInterviews}
+                onInterviewClick={handleInterviewClick}
+              />
+            </CardContent>
+          </Card>
+
+          {/* Interviewer Availability */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Interviewer Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <InterviewerAvailability 
+                date={selectedDate}
+                interviewers={interviewers}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+### 6. Settings (`/settings`)
+**Features to Build:**
+- **Sync Settings**: Airtable API key, sync frequency
+- **User Management**: Team members and roles
+- **General Settings**: Company info, branding
+- **Notification Preferences**: Email/in-app notifications
+
+## Navigation & Layout Requirements
+
+### Sidebar Navigation
+```typescript
+// Required navigation structure
+const navigation = [
+  { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { 
+    name: 'Candidates', 
+    icon: Users,
+    children: [
+      { name: 'Phase 1', href: '/candidates/phase-1' },
+      { name: 'Phase 2', href: '/candidates/phase-2' }
+    ]
+  },
+  { name: 'Interviews', href: '/interviews', icon: Calendar },
+  { name: 'Settings', href: '/settings', icon: Settings }
+];
+```
+
+### Responsive Behavior
+- **Desktop**: Persistent sidebar (256px width)
+- **Tablet**: Collapsible sidebar with overlay
+- **Mobile**: Hidden sidebar, hamburger menu in top bar
+- **All Tables**: Horizontal scroll on mobile, stack on small screens
+
+## Shadcn UI Components to Install
+
+Run these commands in your Replit terminal:
+```bash
+npx shadcn-ui@latest add button card input label select textarea
+npx shadcn-ui@latest add table badge avatar dropdown-menu sheet
+npx shadcn-ui@latest add tabs dialog form checkbox radio-group
+npx shadcn-ui@latest add calendar date-picker progress toast
+npx shadcn-ui@latest add sidebar navigation-menu breadcrumb
+```
+
+## Interactive Features Requirements
+
+### Data Table Functionality
+- **Sorting**: Click column headers to sort
+- **Filtering**: Multi-select dropdowns for each filterable column
+- **Search**: Debounced search across multiple fields
+- **Selection**: Checkbox selection for bulk actions
+- **Pagination**: Show 25/50/100 items per page
+
+### Kanban Board Features
+- **Drag & Drop**: Move candidates between status columns
+- **Column Limits**: Show count of candidates in each column
+- **Add New**: Quick add candidate to any column
+- **Card Actions**: Edit, view, delete from card context menu
+
+### Form Handling
+- **Validation**: Use Zod schemas for all forms
+- **Error States**: Show field-level errors clearly
+- **Loading States**: Disable forms during submission
+- **Success Feedback**: Toast notifications for successful actions
+
+## Performance Requirements
+
+### Optimization Features
+- **Virtual Scrolling**: For large candidate lists (use @tanstack/react-virtual)
+- **Debounced Search**: 300ms delay on search inputs
+- **Optimistic Updates**: Update UI before API calls complete
+- **Error Boundaries**: Catch and display component errors gracefully
+- **Loading Skeletons**: Show skeleton placeholders during data loading
+
+### Memory Management
+- **Pagination**: Don't load all candidates at once
+- **Cleanup**: Remove event listeners in useEffect cleanup
+- **Memoization**: Use React.memo for expensive components
+
+## Accessibility Requirements
+
+### WCAG Compliance
+- **Keyboard Navigation**: All interactive elements accessible via keyboard
+- **Screen Reader Support**: Proper ARIA labels and descriptions
+- **Color Contrast**: Minimum 4.5:1 contrast ratio
+- **Focus Management**: Visible focus indicators, logical tab order
+
+### Specific Implementations
+- **Tables**: Use proper table headers and ARIA labels
+- **Forms**: Associate labels with inputs, error announcements
+- **Modals**: Focus trapping, escape key to close
+- **Status Changes**: Announce dynamic content changes
+
+## Error Handling & Edge Cases
+
+### Error States to Handle
+- **Network Errors**: API calls failing
+- **Empty States**: No candidates, no interviews
+- **Loading States**: Data fetching, form submission
+- **Validation Errors**: Form field errors, bulk action failures
+
+### User Feedback
+- **Toast Notifications**: Success, error, and info messages
+- **Inline Errors**: Form validation errors
+- **Empty State Illustrations**: Friendly empty states with actions
+- **Loading Indicators**: Spinners, progress bars, skeleton screens
+
+## Testing Requirements
+
+### Component Testing
+- **Unit Tests**: Test individual components with Jest
+- **Integration Tests**: Test page-level functionality
+- **Accessibility Tests**: Use @testing-library/jest-dom
+
+### Manual Testing Checklist
+- [ ] All pages load correctly
+- [ ] Navigation works on all screen sizes
+- [ ] Forms validate and submit properly
+- [ ] Tables sort, filter, and paginate
+- [ ] Kanban drag-and-drop works
+- [ ] Dark/light mode switching
+- [ ] Mobile responsiveness
+- [ ] Keyboard navigation
+- [ ] Error handling
+
+## Deployment & Environment
+
+### Environment Variables
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_key
+AIRTABLE_API_KEY=your_airtable_key
+AIRTABLE_BASE_ID=your_base_id
+```
+
+### Build Requirements
+- **TypeScript**: Zero type errors
+- **ESLint**: Clean linting with no warnings
+- **Build Success**: Next.js build completes without errors
+- **Performance**: Lighthouse score > 90 for performance
+
+## Success Criteria
+
+Your implementation is complete when:
+1. ✅ All 6 main pages are fully functional
+2. ✅ Responsive design works on mobile, tablet, desktop
+3. ✅ Dark/light mode switching works throughout
+4. ✅ All interactive features work (tables, forms, navigation)
+5. ✅ Mock data populates all components realistically
+6. ✅ TypeScript compilation has zero errors
+7. ✅ Consistent styling using Shadcn + Tailwind
+8. ✅ Proper loading states and error handling
+9. ✅ Accessibility features implemented
+10. ✅ Performance optimizations in place
+
+## Getting Started Steps
+
+1. **Initialize Project**: `npx create-next-app@latest recruitos --typescript --tailwind --app`
+2. **Install Dependencies**: Shadcn UI, Lucide icons, form libraries
+3. **Setup Folder Structure**: Create all required folders and files
+4. **Configure Theme**: Setup dark/light mode with Tailwind
+5. **Create Mock Data**: Generate realistic test data
+6. **Build Layout**: Start with sidebar and main layout
+7. **Implement Pages**: Dashboard first, then candidate pages
+8. **Add Interactions**: Forms, tables, navigation
+9. **Polish**: Responsive design, loading states, error handling
+10. **Test**: Manual testing across all features
+
+## Additional Notes
+
+- **Code Quality**: Use TypeScript strictly, proper component composition
+- **Git Workflow**: Commit frequently with descriptive messages
+- **Documentation**: Add JSDoc comments to complex functions
+- **Performance**: Monitor bundle size, optimize images
+- **Security**: Sanitize user inputs, validate on both client and server
+
+Start with the main layout and dashboard, then build out each page systematically. Focus on functionality first, then polish the design and interactions. The goal is a production-ready recruitment platform frontend that could be used by real HR teams.
+
+Remember to test each feature thoroughly and ensure the user experience is smooth across all devices and screen sizes.
