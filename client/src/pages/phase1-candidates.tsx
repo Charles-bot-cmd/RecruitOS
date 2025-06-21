@@ -28,8 +28,8 @@ export default function Phase1Candidates() {
 
   // Filter candidates based on selected filters
   const filteredCandidates = candidates.filter((candidate) => {
-    if (statusFilter && candidate.status !== statusFilter) return false;
-    if (sourceFilter && candidate.source !== sourceFilter) return false;
+    if (statusFilter && statusFilter !== "all" && candidate.status !== statusFilter) return false;
+    if (sourceFilter && sourceFilter !== "all" && candidate.source !== sourceFilter) return false;
     return true;
   });
 
@@ -65,19 +65,19 @@ export default function Phase1Candidates() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Phase 1 Candidates</h1>
-          <p className="text-muted-foreground mt-2">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 lg:mb-8">
+        <div className="mb-4 lg:mb-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Phase 1 Candidates</h1>
+          <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
             Screen and evaluate initial applications
           </p>
         </div>
-        <div className="flex items-center space-x-3 mt-4 md:mt-0">
-          <Button onClick={() => setIsModalOpen(true)}>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Add Candidate
           </Button>
-          <Button variant="outline" onClick={() => refetch()}>
+          <Button variant="outline" onClick={() => refetch()} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-2" />
             Sync
           </Button>
@@ -104,7 +104,7 @@ export default function Phase1Candidates() {
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Statuses</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="New">New</SelectItem>
                   <SelectItem value="Screened">Screened</SelectItem>
                   <SelectItem value="Phone Interview">Phone Interview</SelectItem>
@@ -116,7 +116,7 @@ export default function Phase1Candidates() {
                   <SelectValue placeholder="All Sources" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Sources</SelectItem>
+                  <SelectItem value="all">All Sources</SelectItem>
                   <SelectItem value="LinkedIn">LinkedIn</SelectItem>
                   <SelectItem value="Indeed">Indeed</SelectItem>
                   <SelectItem value="Referral">Referral</SelectItem>

@@ -16,25 +16,28 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="flex h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Desktop Sidebar */}
-      <Sidebar />
-      
       {/* Mobile Sidebar Overlay */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-50"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <Sidebar className="relative z-10 w-64" />
-        </div>
-      )}
+      <div className={cn(
+        "fixed inset-0 z-50 lg:hidden",
+        isMobileMenuOpen ? "block" : "hidden"
+      )}>
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+        <Sidebar className="translate-x-0" />
+      </div>
+
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
+        <Sidebar />
+      </div>
 
       {/* Main content */}
-      <main className="flex-1 lg:ml-64 flex flex-col overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 lg:ml-64">
         <TopBar onMobileMenuToggle={toggleMobileMenu} />
         
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 lg:p-6">
           {children}
         </div>
       </main>

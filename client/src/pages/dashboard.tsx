@@ -64,15 +64,15 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground mt-2">
+      <div className="mb-6 lg:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Dashboard</h1>
+        <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
           Welcome back! Here's what's happening with your recruitment.
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
         <StatsCard
           title="Total Candidates"
           value={stats?.totalCandidates || 0}
@@ -104,12 +104,12 @@ export default function Dashboard() {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
         {/* Recent Activity */}
-        <div className="lg:col-span-2">
+        <div className="xl:col-span-2">
           <Card>
-            <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-lg">Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
               <ActivityFeed />
@@ -118,7 +118,7 @@ export default function Dashboard() {
         </div>
 
         {/* Sync Status & Quick Actions */}
-        <div className="space-y-6">
+        <div className="space-y-4 lg:space-y-6">
           {/* Sync Status Card */}
           <Card>
             <CardContent className="p-6">

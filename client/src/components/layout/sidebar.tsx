@@ -27,7 +27,7 @@ export default function Sidebar({ className }: SidebarProps) {
 
   return (
     <aside className={cn(
-      "hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-sm",
+      "flex flex-col w-64 fixed inset-y-0 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-sm z-30 transform transition-transform duration-300 ease-in-out lg:translate-x-0",
       className
     )}>
       <div className="flex items-center px-6 py-4 border-b border-slate-200 dark:border-slate-700">

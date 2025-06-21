@@ -85,15 +85,15 @@ export default function Interviews() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">Interviews</h1>
-          <p className="text-muted-foreground mt-2">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-6 lg:mb-8">
+        <div className="mb-4 lg:mb-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Interviews</h1>
+          <p className="text-muted-foreground mt-1 sm:mt-2 text-sm sm:text-base">
             Manage and track candidate interviews
           </p>
         </div>
-        <div className="flex items-center space-x-3 mt-4 md:mt-0">
-          <Button>
+        <div className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto">
             <CalendarPlus className="w-4 h-4 mr-2" />
             Schedule Interview
           </Button>
@@ -101,9 +101,9 @@ export default function Interviews() {
       </div>
 
       {/* Interview Calendar/Timeline */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 lg:gap-6">
         {/* Today's Interviews */}
-        <div className="lg:col-span-2">
+        <div className="xl:col-span-2">
           <Card>
             <CardHeader>
               <CardTitle>Today's Interviews</CardTitle>

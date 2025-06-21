@@ -50,8 +50,8 @@ export default function CandidateTable({
   const isIndeterminate = selectedIds.length > 0 && selectedIds.length < candidates.length;
 
   return (
-    <div className="overflow-x-auto">
-      <Table>
+    <div className="overflow-x-auto -mx-3 sm:mx-0">
+      <Table className="min-w-full">
         <TableHeader>
           <TableRow>
             <TableHead className="w-12">
