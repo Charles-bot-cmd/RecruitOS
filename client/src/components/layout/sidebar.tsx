@@ -31,12 +31,12 @@ export default function Sidebar({ className }: SidebarProps) {
       "flex flex-col w-64 fixed inset-y-0 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-sm z-30 transform transition-transform duration-300 ease-in-out lg:translate-x-0",
       className
     )}>
-      <div className="flex items-center px-4 sm:px-6 py-6 border-b border-slate-200 dark:border-slate-700">
+      <div className="flex items-center px-4 sm:px-6 py-8 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-center w-full">
           <img 
             src={logoImage} 
             alt="RecruitFlow Logo" 
-            className="h-12 w-auto object-contain max-w-[200px] filter dark:brightness-110"
+            className="h-16 w-auto object-contain max-w-[240px] filter dark:brightness-110"
           />
         </div>
       </div>

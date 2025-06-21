@@ -8,9 +8,9 @@ This document outlines the branding guidelines for RecruitFlow, a comprehensive 
 The RecruitFlow logo features a blue "R" icon combined with the text "RECRUIT Flow" where "RECRUIT" is in bold black letters and "Flow" is in blue script.
 
 ### Logo Specifications
-- **Sidebar Logo**: Height of 48px (12 in Tailwind units)
-- **Mobile Header Logo**: Height of 32px (8 in Tailwind units)
-- **Maximum Width**: 200px for sidebar, 150px for mobile
+- **Sidebar Logo**: Height of 64px (16 in Tailwind units)
+- **Mobile Header Logo**: Height of 40px (10 in Tailwind units)
+- **Maximum Width**: 240px for sidebar, 180px for mobile
 - **Format**: JPG/PNG with transparent background preferred
 - **Dark Mode**: Apply brightness filter (110%) for better visibility
 
@@ -20,14 +20,14 @@ The RecruitFlow logo features a blue "R" icon combined with the text "RECRUIT Fl
 <img 
   src={logoImage} 
   alt="RecruitFlow Logo" 
-  className="h-12 w-auto object-contain max-w-[200px] filter dark:brightness-110"
+  className="h-16 w-auto object-contain max-w-[240px] filter dark:brightness-110"
 />
 
 // Mobile Header Implementation
 <img 
   src={logoImage} 
   alt="RecruitFlow Logo" 
-  className="h-8 w-auto object-contain max-w-[150px] filter dark:brightness-110"
+  className="h-10 w-auto object-contain max-w-[180px] filter dark:brightness-110"
 />
 ```
 

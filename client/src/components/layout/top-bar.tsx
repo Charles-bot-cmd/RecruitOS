@@ -18,7 +18,7 @@ export default function TopBar({ onMobileMenuToggle }: TopBarProps) {
   };
 
   return (
-    <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
+    <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="lg:hidden">
@@ -35,7 +35,7 @@ export default function TopBar({ onMobileMenuToggle }: TopBarProps) {
             <img 
               src={logoImage} 
               alt="RecruitFlow Logo" 
-              className="h-8 w-auto object-contain max-w-[150px] filter dark:brightness-110"
+              className="h-10 w-auto object-contain max-w-[180px] filter dark:brightness-110"
             />
           </div>
           <div className="hidden lg:block">
