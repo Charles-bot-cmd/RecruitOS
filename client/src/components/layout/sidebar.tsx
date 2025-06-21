@@ -9,6 +9,7 @@ import {
   Settings, 
   User 
 } from "lucide-react";
+import logoImage from "@assets/WhatsApp Image 2025-06-21 at 09.27.15_5aa6f227_1750490847834.jpg";
 
 interface SidebarProps {
   className?: string;
@@ -30,12 +31,13 @@ export default function Sidebar({ className }: SidebarProps) {
       "flex flex-col w-64 fixed inset-y-0 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 shadow-sm z-30 transform transition-transform duration-300 ease-in-out lg:translate-x-0",
       className
     )}>
-      <div className="flex items-center px-6 py-4 border-b border-slate-200 dark:border-slate-700">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <Users className="w-5 h-5 text-white" />
-          </div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-white">RecruitOS</h1>
+      <div className="flex items-center px-4 sm:px-6 py-6 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-center w-full">
+          <img 
+            src={logoImage} 
+            alt="RecruitFlow Logo" 
+            className="h-12 w-auto object-contain max-w-[200px] filter dark:brightness-110"
+          />
         </div>
       </div>
       

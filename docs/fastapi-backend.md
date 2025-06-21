@@ -1,6 +1,6 @@
-# RecruitOS FastAPI Backend Documentation
+# RecruitFlow FastAPI Backend Documentation
 
-This document provides comprehensive API documentation for implementing a FastAPI backend for RecruitOS.
+This document provides comprehensive API documentation for implementing a FastAPI backend for RecruitFlow.
 
 ## Base URL
 ```
@@ -570,4 +570,4 @@ curl -X POST "https://your-api-domain.com/api/candidates" \
   }'
 ```
 
-This documentation provides everything needed to implement a FastAPI backend that will seamlessly integrate with the RecruitOS frontend.
+This documentation provides everything needed to implement a FastAPI backend that will seamlessly integrate with the RecruitFlow frontend.

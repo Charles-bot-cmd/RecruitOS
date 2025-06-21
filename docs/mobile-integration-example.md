@@ -1,6 +1,6 @@
-# RecruitOS Mobile Integration Example
+# RecruitFlow Mobile Integration Example
 
-This document provides examples for integrating RecruitOS APIs with mobile applications using React Native.
+This document provides examples for integrating RecruitFlow APIs with mobile applications using React Native.
 
 ## React Native API Client
 
@@ -546,4 +546,4 @@ export default function App() {
 }
 ```
 
-This mobile integration example demonstrates how to consume the RecruitOS APIs in a React Native application with proper error handling, loading states, and offline support.
+This mobile integration example demonstrates how to consume the RecruitFlow APIs in a React Native application with proper error handling, loading states, and offline support.

@@ -3,6 +3,7 @@ import { Search, Bell, Sun, Moon, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/hooks/use-theme";
+import logoImage from "@assets/WhatsApp Image 2025-06-21 at 09.27.15_5aa6f227_1750490847834.jpg";
 
 interface TopBarProps {
   onMobileMenuToggle?: () => void;
@@ -31,7 +32,11 @@ export default function TopBar({ onMobileMenuToggle }: TopBarProps) {
             </Button>
           </div>
           <div className="lg:hidden">
-            <h1 className="text-xl font-bold text-slate-900 dark:text-white">RecruitOS</h1>
+            <img 
+              src={logoImage} 
+              alt="RecruitFlow Logo" 
+              className="h-8 w-auto object-contain max-w-[150px] filter dark:brightness-110"
+            />
           </div>
           <div className="hidden lg:block">
             <div className="relative">
