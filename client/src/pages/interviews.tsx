@@ -15,8 +15,10 @@ import {
 import { useInterviews } from "@/hooks/use-interviews";
 import { formatTime, formatDate, getInitials } from "@/lib/utils";
 import StatusBadge from "@/components/shared/status-badge";
+import ScheduleInterviewModal from "@/components/modals/schedule-interview-modal";
 
 export default function Interviews() {
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const { data: allInterviews = [], isLoading } = useInterviews();
 
   // Get today's interviews
@@ -93,7 +95,10 @@ export default function Interviews() {
           </p>
         </div>
         <div className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto">
+          <Button 
+            className="w-full sm:w-auto"
+            onClick={() => setIsScheduleModalOpen(true)}
+          >
             <CalendarPlus className="w-4 h-4 mr-2" />
             Schedule Interview
           </Button>
@@ -276,6 +281,12 @@ export default function Interviews() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Schedule Interview Modal */}
+      <ScheduleInterviewModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => setIsScheduleModalOpen(false)}
+      />
     </div>
   );
 }

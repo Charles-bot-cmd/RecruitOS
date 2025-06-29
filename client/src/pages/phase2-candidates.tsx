@@ -9,10 +9,11 @@ import {
   SelectTrigger, 
   SelectValue 
 } from "@/components/ui/select";
-import { Plus, RefreshCw, Search, Download, Table } from "lucide-react";
+import { Plus, RefreshCw, Search, Download, Table, CalendarPlus } from "lucide-react";
 import { useCandidates } from "@/hooks/use-candidates";
 import CandidateTable from "@/components/shared/candidate-table";
 import CandidateModal from "@/components/modals/candidate-modal";
+import ScheduleInterviewModal from "@/components/modals/schedule-interview-modal";
 import { exportToCSV } from "@/lib/utils";
 import type { Candidate } from "@/lib/types";
 
@@ -22,7 +23,9 @@ export default function Phase2Candidates() {
   const [sourceFilter, setSourceFilter] = useState<string>("");
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false);
   const [editingCandidate, setEditingCandidate] = useState<Candidate | undefined>();
+  const [candidateToSchedule, setCandidateToSchedule] = useState<Candidate | undefined>();
 
   const { data: candidates = [], isLoading, refetch } = useCandidates(2, searchQuery);
 
@@ -36,6 +39,11 @@ export default function Phase2Candidates() {
   const handleEdit = (candidate: Candidate) => {
     setEditingCandidate(candidate);
     setIsModalOpen(true);
+  };
+
+  const handleScheduleInterview = (candidate: Candidate) => {
+    setCandidateToSchedule(candidate);
+    setIsScheduleModalOpen(true);
   };
 
   const handleCloseModal = () => {
@@ -76,6 +84,14 @@ export default function Phase2Candidates() {
           <Button onClick={() => setIsModalOpen(true)} className="w-full sm:w-auto">
             <Plus className="w-4 h-4 mr-2" />
             Add Candidate
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => setIsScheduleModalOpen(true)} 
+            className="w-full sm:w-auto"
+          >
+            <CalendarPlus className="w-4 h-4 mr-2" />
+            Schedule Interview
           </Button>
           <Button variant="outline" onClick={() => refetch()} className="w-full sm:w-auto">
             <RefreshCw className="w-4 h-4 mr-2" />
@@ -181,6 +197,16 @@ export default function Phase2Candidates() {
         onClose={handleCloseModal}
         candidate={editingCandidate}
         mode={editingCandidate ? "edit" : "create"}
+      />
+
+      {/* Schedule Interview Modal */}
+      <ScheduleInterviewModal
+        isOpen={isScheduleModalOpen}
+        onClose={() => {
+          setIsScheduleModalOpen(false);
+          setCandidateToSchedule(undefined);
+        }}
+        preselectedCandidate={candidateToSchedule}
       />
     </div>
   );
