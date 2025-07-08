@@ -106,8 +106,13 @@ The application manages four primary entities:
 
 ## Changelog
 
-Changelog:
-- July 02, 2025. Initial setup
+- January 08, 2025: Removed Airtable integration and updated settings to work with Supabase database
+  - Replaced Airtable sync settings with Supabase database connection configuration
+  - Updated settings page to remove Base ID and Table Name fields
+  - Added database URL configuration and auto-sync toggle
+  - Implemented comprehensive notification system with bell icon functionality
+  - Added meeting scheduling system for Phase 2 candidates
+- July 02, 2025: Initial setup
 
 ## User Preferences
 

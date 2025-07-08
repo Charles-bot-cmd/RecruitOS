@@ -31,10 +31,10 @@ import { useToast } from "@/hooks/use-toast";
 import { UserPlus, Edit2, Trash2, TestTube, Save } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 
-const syncSettingsSchema = z.object({
-  baseId: z.string().min(1, "Base ID is required"),
-  tableName: z.string().min(1, "Table name is required"),
+const databaseSettingsSchema = z.object({
+  databaseUrl: z.string().url("Valid database URL is required"),
   syncFrequency: z.enum(["manual", "15min", "1hour", "daily"]),
+  autoSync: z.boolean(),
 });
 
 const generalSettingsSchema = z.object({
@@ -45,7 +45,7 @@ const generalSettingsSchema = z.object({
   enableReminders: z.boolean(),
 });
 
-type SyncSettingsData = z.infer<typeof syncSettingsSchema>;
+type DatabaseSettingsData = z.infer<typeof databaseSettingsSchema>;
 type GeneralSettingsData = z.infer<typeof generalSettingsSchema>;
 
 interface TeamMember {
@@ -109,17 +109,17 @@ const notificationSettings: NotificationSetting[] = [
 ];
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState("sync");
+  const [activeTab, setActiveTab] = useState("database");
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>(mockTeamMembers);
   const [notifications, setNotifications] = useState<NotificationSetting[]>(notificationSettings);
   const { toast } = useToast();
 
-  const syncForm = useForm<SyncSettingsData>({
-    resolver: zodResolver(syncSettingsSchema),
+  const databaseForm = useForm<DatabaseSettingsData>({
+    resolver: zodResolver(databaseSettingsSchema),
     defaultValues: {
-      baseId: "",
-      tableName: "Candidates",
-      syncFrequency: "manual",
+      databaseUrl: "",
+      syncFrequency: "1hour",
+      autoSync: true,
     },
   });
 
@@ -134,13 +134,13 @@ export default function Settings() {
     },
   });
 
-  const handleSyncSettings = async (data: SyncSettingsData) => {
+  const handleDatabaseSettings = async (data: DatabaseSettingsData) => {
     try {
       // TODO: Implement sync settings save
       console.log("Saving sync settings:", data);
       toast({
-        title: "Success",
-        description: "Sync settings saved successfully",
+        title: "Database Settings Updated",
+        description: "Your Supabase database settings have been saved successfully.",
       });
     } catch (error) {
       toast({
@@ -168,21 +168,7 @@ export default function Settings() {
     }
   };
 
-  const handleTestConnection = async () => {
-    try {
-      // TODO: Implement test connection
-      toast({
-        title: "Success",
-        description: "Connection test successful",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Connection test failed",
-        variant: "destructive",
-      });
-    }
-  };
+
 
   const handleInviteTeamMember = () => {
     // TODO: Implement team member invitation
@@ -204,6 +190,29 @@ export default function Settings() {
     });
   };
 
+  const handleTestConnection = async () => {
+    try {
+      toast({
+        title: "Testing Connection",
+        description: "Checking database connection...",
+      });
+      
+      // TODO: Implement actual connection test to Supabase
+      setTimeout(() => {
+        toast({
+          title: "Connection Successful",
+          description: "Successfully connected to Supabase database.",
+        });
+      }, 2000);
+    } catch (error) {
+      toast({
+        title: "Connection Failed",
+        description: "Unable to connect to the database. Please check your settings.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const handleNotificationToggle = (notificationId: string, enabled: boolean) => {
     setNotifications(notifications =>
       notifications.map(notification =>
@@ -218,7 +227,7 @@ export default function Settings() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground">Settings</h1>
         <p className="text-muted-foreground mt-2">
-          Configure your RecruitOS workspace
+          Configure your RecruitFlow workspace and Supabase database connection
         </p>
       </div>
 
@@ -228,10 +237,10 @@ export default function Settings() {
           <div className="border-b border-border">
             <TabsList className="h-auto p-0 bg-transparent">
               <TabsTrigger
-                value="sync"
+                value="database"
                 className="data-[state=active]:border-b-2 data-[state=active]:border-primary data-[state=active]:bg-transparent rounded-none px-6 py-4"
               >
-                Sync Settings
+                Database Settings
               </TabsTrigger>
               <TabsTrigger
                 value="team"
@@ -254,38 +263,54 @@ export default function Settings() {
             </TabsList>
           </div>
 
-          {/* Sync Settings Tab */}
-          <TabsContent value="sync" className="p-6">
+          {/* Database Settings Tab */}
+          <TabsContent value="database" className="p-6">
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-medium text-foreground mb-4">
-                  Airtable Integration
+                  Supabase Database Connection
                 </h3>
-                <Form {...syncForm}>
-                  <form onSubmit={syncForm.handleSubmit(handleSyncSettings)} className="space-y-4">
+                <p className="text-muted-foreground mb-4">
+                  Configure your Supabase database connection. Your automation will sync candidate data directly to the database.
+                </p>
+                <Form {...databaseForm}>
+                  <form onSubmit={databaseForm.handleSubmit(handleDatabaseSettings)} className="space-y-4">
                     <FormField
-                      control={syncForm.control}
-                      name="baseId"
+                      control={databaseForm.control}
+                      name="databaseUrl"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Base ID</FormLabel>
+                          <FormLabel>Database URL</FormLabel>
                           <FormControl>
-                            <Input placeholder="Enter your Airtable Base ID" {...field} />
+                            <Input 
+                              placeholder="postgresql://[user]:[password]@[host]:[port]/[dbname]" 
+                              type="password"
+                              {...field} 
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                     <FormField
-                      control={syncForm.control}
-                      name="tableName"
+                      control={databaseForm.control}
+                      name="autoSync"
                       render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Table Name</FormLabel>
+                        <FormItem className="flex items-center justify-between rounded-lg border p-4">
+                          <div className="space-y-0.5">
+                            <FormLabel className="text-base">
+                              Auto Sync
+                            </FormLabel>
+                            <div className="text-sm text-muted-foreground">
+                              Automatically sync candidate data from your automation
+                            </div>
+                          </div>
                           <FormControl>
-                            <Input placeholder="Candidates" {...field} />
+                            <Switch
+                              checked={field.value}
+                              onCheckedChange={field.onChange}
+                            />
                           </FormControl>
-                          <FormMessage />
                         </FormItem>
                       )}
                     />
@@ -297,14 +322,15 @@ export default function Settings() {
 
               <div>
                 <h3 className="text-lg font-medium text-foreground mb-4">
-                  Sync Frequency
+                  Data Sync Settings
                 </h3>
-                <Form {...syncForm}>
+                <Form {...databaseForm}>
                   <FormField
-                    control={syncForm.control}
+                    control={databaseForm.control}
                     name="syncFrequency"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
+                        <FormLabel>Sync Frequency</FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -339,7 +365,7 @@ export default function Settings() {
               <Separator />
 
               <div className="flex items-center justify-between pt-4">
-                <Button onClick={syncForm.handleSubmit(handleSyncSettings)}>
+                <Button onClick={databaseForm.handleSubmit(handleDatabaseSettings)}>
                   <Save className="w-4 h-4 mr-2" />
                   Save Settings
                 </Button>

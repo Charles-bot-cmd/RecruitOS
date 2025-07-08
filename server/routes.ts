@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { databaseManager } from "./database";
 import { insertCandidateSchema, insertInterviewSchema } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -175,6 +176,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(activities);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch activity feed" });
+    }
+  });
+
+  // Database management routes
+  app.get("/api/database/status", async (req, res) => {
+    try {
+      const status = await databaseManager.testConnection();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to check database status" });
+    }
+  });
+
+  app.post("/api/database/config", async (req, res) => {
+    try {
+      const { databaseUrl, autoSync, syncFrequency } = req.body;
+      await databaseManager.updateConfig({
+        databaseUrl,
+        autoSync,
+        syncFrequency
+      });
+      res.json({ message: "Database configuration updated successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update database configuration" });
+    }
+  });
+
+  app.get("/api/database/config", async (req, res) => {
+    try {
+      const config = databaseManager.getConfig();
+      // Don't expose the full database URL for security
+      res.json({
+        ...config,
+        databaseUrl: config.databaseUrl ? '***configured***' : ''
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get database configuration" });
+    }
+  });
+
+  app.post("/api/database/test-connection", async (req, res) => {
+    try {
+      const status = await databaseManager.testConnection();
+      res.json(status);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to test database connection" });
     }
   });
 
