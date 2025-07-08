@@ -94,3 +94,7 @@ export function exportToCSV(data: any[], filename: string) {
     document.body.removeChild(link);
   }
 }
+
+export function formatRelativeTime(date: Date | string): string {
+  return getRelativeTime(date);
+}

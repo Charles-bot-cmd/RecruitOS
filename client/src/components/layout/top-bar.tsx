@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Search, Bell, Sun, Moon, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTheme } from "@/hooks/use-theme";
+import { useNotifications } from "@/hooks/use-notifications";
+import NotificationPanel from "@/components/shared/notification-panel";
 import logoImage from "@assets/WhatsApp Image 2025-06-21 at 09.27.15_5aa6f227_1750490847834.jpg";
 
 interface TopBarProps {
@@ -11,11 +13,38 @@ interface TopBarProps {
 
 export default function TopBar({ onMobileMenuToggle }: TopBarProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const { 
+    notifications, 
+    unreadCount, 
+    markAsRead, 
+    markAllAsRead, 
+    deleteNotification 
+  } = useNotifications();
+  const notificationRef = useRef<HTMLDivElement>(null);
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
+  const toggleNotifications = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+
+  // Close notifications when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-5">
@@ -64,14 +93,29 @@ export default function TopBar({ onMobileMenuToggle }: TopBarProps) {
               <Moon className="w-5 h-5" />
             )}
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-slate-600 dark:text-slate-300 relative"
-          >
-            <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
-          </Button>
+          <div className="relative" ref={notificationRef}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleNotifications}
+              className="text-slate-600 dark:text-slate-300 relative"
+            >
+              <Bell className="w-5 h-5" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </Button>
+            <NotificationPanel
+              isOpen={isNotificationOpen}
+              onClose={() => setIsNotificationOpen(false)}
+              notifications={notifications}
+              onMarkAsRead={markAsRead}
+              onMarkAllAsRead={markAllAsRead}
+              onDeleteNotification={deleteNotification}
+            />
+          </div>
         </div>
       </div>
     </header>
